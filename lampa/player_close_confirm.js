@@ -12,8 +12,8 @@
 
         Lampa.Controller.back = function () {
             if (Lampa.Player.opened()) {
-                if (document.querySelector('.player--panel-visible')) {
-                    original_controller_back();
+                if (Lampa.PlayerPanel.visibleStatus()) {
+                    Lampa.PlayerPanel.hide();
                     return;
                 }
                 if (back_to_close) {
