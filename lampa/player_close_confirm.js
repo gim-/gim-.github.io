@@ -53,7 +53,7 @@
         document.addEventListener("keydown", (event) => {
             if (['ArrowUp', 'ArrowDown', 'Enter'].includes(event.key)) {
                 if (!Lampa.Player.opened() || Lampa.PlayerPanel.visibleStatus()
-                    || Lampa.Select.opened() || Lampa.Modal.opened()) {
+                    || Lampa.Select.opened()) {
                     return;
                 }
                 // Show player panel on first key press if it's not visible.
