@@ -16,11 +16,13 @@
 
         Lampa.Controller.back = function () {
             if (Lampa.Player.opened()) {
-                if (Lampa.Select.opened()) {
+                if (Lampa.Select.opened() || Lampa.Modal.opened()) {
+                    // Menu is open, let it handle the back press
                     original_controller_back();
                     return;
                 }
                 if (Lampa.PlayerPanel.visibleStatus()) {
+                    // Always hide player panel first on back press, this is more intuitive
                     Lampa.PlayerPanel.hide();
                     return;
                 }
@@ -47,6 +49,19 @@
                 original_controller_back();
             }
         };
+
+        document.addEventListener("keydown", (event) => {
+            if (['ArrowUp', 'ArrowDown', 'Enter'].includes(event.key)) {
+                if (!Lampa.Player.opened() || Lampa.PlayerPanel.visibleStatus()
+                    || Lampa.Select.opened() || Lampa.Modal.opened()) {
+                    return;
+                }
+                // Show player panel on first key press if it's not visible.
+                // This provides more predictable behavior for keyboard/remote users.
+                event.preventDefault();
+                Lampa.PlayerPanel.toggle();
+            }
+        });
     }
 
     function showMessage(message) {
