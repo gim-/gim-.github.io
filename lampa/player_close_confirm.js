@@ -6,6 +6,7 @@
     var original_controller_back;
     var message_element;
     var timeout = 1000;
+    var modal_opened = false; // Track if a new modal has been opened after player start
 
     function startListener() {
         original_controller_back = Lampa.Controller.back;
@@ -16,7 +17,7 @@
 
         Lampa.Controller.back = function () {
             if (Lampa.Player.opened()) {
-                if (Lampa.Select.opened()) {
+                if (Lampa.Select.opened() || modal_opened) {
                     // Menu is open, let it handle the back press
                     original_controller_back();
                     return;
@@ -50,10 +51,24 @@
             }
         };
 
+        // Workaround to prevent immediate back-to-close when a modal is opened in the previous screen,
+        // e.g. when a list of files is shown
+        Lampa.Listener.follow("player", function (e) {
+            if (e.type === "start") {
+                modal_opened = false;
+            }
+        });
+        Lampa.Modal.follow("toggle", function () {
+            modal_opened = true;
+        });
+        Lampa.Modal.follow("close", function () {
+            modal_opened = false;
+        });
+
         document.addEventListener("keydown", (event) => {
             if (['ArrowUp', 'ArrowDown', 'Enter'].includes(event.key)) {
                 if (!Lampa.Player.opened() || Lampa.PlayerPanel.visibleStatus()
-                    || Lampa.Select.opened() || Lampa.Modal.opened()) {
+                    || Lampa.Select.opened() || modal_opened) {
                     return;
                 }
                 // Show player panel on first key press if it's not visible.
