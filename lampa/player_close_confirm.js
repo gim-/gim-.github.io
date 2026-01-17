@@ -12,11 +12,8 @@
 
         Lampa.Controller.back = function () {
             if (Lampa.Player.opened()) {
-                var panel = document.querySelector('.player--panel-visible');
-                if (panel) {
-                    // Lampa странно управляет панелью плеера при нажатии кнопки назад.
-                    // Вместо оригинальной функции, прячем панель сами.
-                    panel.classList.remove('player--panel-visible');
+                if (document.querySelector('.player--panel-visible')) {
+                    original_controller_back();
                     return;
                 }
                 if (back_to_close) {
