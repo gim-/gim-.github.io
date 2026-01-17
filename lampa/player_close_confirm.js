@@ -10,8 +10,16 @@
     function startListener() {
         original_controller_back = Lampa.Controller.back;
 
+        Lampa.Select.opened = function () {
+            return document.body.classList.contains('selectbox--open');
+        }
+
         Lampa.Controller.back = function () {
             if (Lampa.Player.opened()) {
+                if (Lampa.Select.opened()) {
+                    original_controller_back();
+                    return;
+                }
                 if (Lampa.PlayerPanel.visibleStatus()) {
                     Lampa.PlayerPanel.hide();
                     return;
