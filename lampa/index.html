@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Lampa Plugins</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    :root {
+      --background: #000000;
+      --foreground: #fafafa;
+      --muted-foreground: #71717a;
+      --success: #22c55e;
+      --success-muted: rgba(34, 197, 94, 0.12);
+      --border: #1a1a1a;
+      --input: #0a0a0a;
+      --radius: 0.5rem;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-y: scroll;
+    }
+
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 2px;
+    }
+
+    body {
+      background-color: var(--background);
+      color: var(--foreground);
+      font-family:
+        "Inter",
+        -apple-system,
+        BlinkMacSystemFont,
+        sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      touch-action: manipulation;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+
+    .header {
+      margin-bottom: 2rem;
+    }
+
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      margin: 0 0 0.5rem 0;
+      color: var(--foreground);
+    }
+
+    .header p {
+      color: var(--muted-foreground);
+      font-size: 0.875rem;
+      margin: 0;
+    }
+
+    .filters {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 0.45rem 0.6rem;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 3px;
+      color: var(--muted-foreground);
+      font-size: 0.625rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      touch-action: manipulation;
+    }
+
+    .filter-btn[data-filter="all"] {
+      background: var(--background);
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .filter-btn[data-filter="online"] {
+      background: rgba(34, 197, 94, 0.12);
+      color: #22c55e;
+    }
+
+    .filter-btn[data-filter="ui"] {
+      background: rgba(99, 102, 241, 0.12);
+      color: #818cf8;
+    }
+
+    .filter-btn[data-filter="player"] {
+      background: rgba(249, 115, 22, 0.12);
+      color: #fb923c;
+    }
+
+    .filter-btn[data-filter="anime"] {
+      background: rgba(236, 72, 153, 0.12);
+      color: #f472b6;
+    }
+
+    .filter-btn.active[data-filter="all"] {
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .filter-btn.active[data-filter="online"] {
+      border-color: rgba(34, 197, 94, 0.7);
+    }
+
+    .filter-btn.active[data-filter="ui"] {
+      border-color: rgba(129, 141, 248, 0.7);
+    }
+
+    .filter-btn.active[data-filter="player"] {
+      border-color: rgba(251, 146, 60, 0.7);
+    }
+
+    .filter-btn.active[data-filter="anime"] {
+      border-color: rgba(244, 114, 181, 0.7);
+    }
+
+    a {
+      color: var(--foreground);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      transition: border-color 0.2s ease;
+    }
+
+    a:hover {
+      border-color: var(--foreground);
+    }
+
+    .plugins-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .plugin-item {
+      background: var(--background);
+      padding: 1.25rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    /*
+			.plugin-item:hover {
+				background: #050505;
+				transition: background 0.2s ease;
+			}
+			*/
+
+    .plugin-item.hidden {
+      display: none;
+    }
+
+    .plugin-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .plugin-top {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .plugin-name {
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--foreground);
+      margin: 0;
+    }
+
+    .plugin-badge {
+      font-size: 0.625rem;
+      font-weight: 500;
+      padding: 0.2rem 0.4rem;
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .plugin-badge[data-type="online"] {
+      background: rgba(34, 197, 94, 0.12);
+      color: #22c55e;
+    }
+
+    .plugin-badge[data-type="ui"] {
+      background: rgba(99, 102, 241, 0.12);
+      color: #818cf8;
+    }
+
+    .plugin-badge[data-type="player"] {
+      background: rgba(249, 115, 22, 0.12);
+      color: #fb923c;
+    }
+
+    .plugin-badge[data-type="anime"] {
+      background: rgba(236, 72, 153, 0.12);
+      color: #f472b6;
+    }
+
+    .plugin-description {
+      color: var(--muted-foreground);
+      font-size: 0.8125rem;
+      margin: 0;
+      /* white-space: nowrap; */
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .plugin-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+      width: 100%;
+    }
+
+    .plugin-url {
+      background: var(--input);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0 0.75rem;
+      height: 2rem;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.6875rem;
+      color: var(--muted-foreground);
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      outline: none;
+      cursor: text;
+      width: 100%;
+      touch-action: manipulation;
+    }
+
+    .copy-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      touch-action: manipulation;
+    }
+
+    .copy-btn:hover {
+      border-color: var(--muted-foreground);
+    }
+
+    .copy-btn svg {
+      width: 14px;
+      height: 14px;
+      color: var(--muted-foreground);
+      transition: color 0.2s ease;
+    }
+
+    .copy-btn:hover svg {
+      color: var(--foreground);
+    }
+
+    .copy-btn.copied {
+      border-color: var(--success);
+    }
+
+    .copy-btn.copied svg {
+      color: var(--success);
+    }
+
+    .footer {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--muted-foreground);
+      font-size: 0.75rem;
+    }
+
+    .support-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--foreground);
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .support-link:hover {
+      background: var(--input);
+      border-color: var(--muted-foreground);
+    }
+
+    .support-link svg {
+      width: 14px;
+      height: 14px;
+      fill: #ef4444;
+    }
+
+    @media (max-width: 800px) {
+      .container {
+        padding: 2rem 1.5rem;
+      }
+
+      .footer {
+        flex-direction: column;
+        gap: 1.5rem;
+        align-items: flex-start;
+      }
+
+      .plugin-item {
+        padding: 1rem 0;
+      }
+
+      .plugin-description {
+        white-space: normal;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>Коллекция плагинов</h1>
+    </header>
+
+    <!-- <div class="filters" id="filters"> -->
+    <!--   <button class="filter-btn" data-filter="player">Плеер</button> -->
+    <!-- </div> -->
+
+    <div class="plugins-list" id="pluginsList"></div>
+
+    <footer class="footer">
+      <div class="footer-left">
+        Сделано с любовью для сообщества Lampa.
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    document.addEventListener('dblclick', (e) => {
+      e.preventDefault();
+    }, {passive: false});
+
+    const BASE_URL = "https://amiv1.github.io/";
+
+    const plugins = [
+      {
+        name: "PlayerCloseConfirmation",
+        file: "lampa/player_close_confirm.js",
+        description:
+          "Добавляет подтверждение закрытию плеера кнопкой Назад, чтобы предотвратить случайное закрытие",
+        badge: "player"
+      },
+      {
+        name: "KP-IMDB-Rating",
+        file: "lampa/rating.js",
+        description:
+          "Исправленный оригинальный плагин для показа рейтинга Кинопоиска и IMDB: https://github.com/nb557/plugins/pull/23",
+        badge: "ui"
+      },
+    ];
+
+    function copyToClipboard(text, btn) {
+      navigator.clipboard.writeText(text).then(() => {
+        btn.classList.add("copied");
+        btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+
+        setTimeout(() => {
+          btn.classList.remove("copied");
+          btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+        }, 2000);
+      });
+    }
+
+    function createPluginItem(plugin) {
+      const url = BASE_URL + plugin.file;
+
+      const badgeTypes = {
+        Плеер: "player",
+        UI: "ui",
+      };
+
+      const item = document.createElement("div");
+      item.className = "plugin-item";
+      item.dataset.category = badgeTypes[plugin.badge] || "ui";
+
+      item.innerHTML = `
+					<div class="plugin-info">
+						<div class="plugin-top">
+							<h3 class="plugin-name">${plugin.name}</h3>
+							<span class="plugin-badge" data-type="${badgeTypes[plugin.badge] || "ui"}">${plugin.badge}</span>
+						</div>
+						<p class="plugin-description">${plugin.description}</p>
+					</div>
+					<div class="plugin-actions">
+						<input type="text" class="plugin-url" value="${url}" readonly />
+						<button class="copy-btn" title="Копировать ссылку">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+								<rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+								<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+							</svg>
+						</button>
+					</div>
+				`;
+
+      const copyBtn = item.querySelector(".copy-btn");
+      copyBtn.addEventListener("click", () => copyToClipboard(url, copyBtn));
+
+      const urlInput = item.querySelector(".plugin-url");
+      urlInput.addEventListener("click", (e) => {
+        e.target.select();
+        e.target.setSelectionRange(0, e.target.value.length);
+      });
+
+      return item;
+    }
+
+    function filterPlugins(category) {
+      const items = document.querySelectorAll(".plugin-item");
+      items.forEach((item) => {
+        if (category === "all" || item.dataset.category === category) {
+          item.classList.remove("hidden");
+        } else {
+          item.classList.add("hidden");
+        }
+      });
+    }
+
+    function init() {
+      const list = document.getElementById("pluginsList");
+      plugins.forEach((plugin) => {
+        list.appendChild(createPluginItem(plugin));
+      });
+
+      const filterBtns = document.querySelectorAll(".filter-btn");
+      filterBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          filterBtns.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          filterPlugins(btn.dataset.filter);
+        });
+      });
+    }
+
+    init();
+  </script>
+</body>
+
+</html>
