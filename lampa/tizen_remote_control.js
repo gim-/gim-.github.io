@@ -4,6 +4,7 @@
     function startPlugin() {
         window.tizen_remote_control_plugin = true;
 
+        // https://developer.samsung.com/smarttv/develop/guides/user-interaction/remote-control.html
         tizen.tvinputdevice.registerKey('MediaPlayPause');
         tizen.tvinputdevice.registerKey('ChannelUp');
         tizen.tvinputdevice.registerKey('ChannelDown');
