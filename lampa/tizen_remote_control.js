@@ -6,6 +6,9 @@
         tizen.tvinputdevice.registerKey('MediaPlayPause');
         tizen.tvinputdevice.registerKey('ChannelUp');
         tizen.tvinputdevice.registerKey('ChannelDown');
+        tizen.tvinputdevice.registerKey('ChannelList');
+        tizen.tvinputdevice.registerKey('MediaTrackNext');
+        tizen.tvinputdevice.registerKey('MediaTrackPrevious');
 
         document.addEventListener("keydown", (event) => {
             if (!Lampa.Player.opened()) {
@@ -17,12 +20,18 @@
                     Lampa.PlayerVideo.playpause();
                     break;
                 case tizen.tvinputdevice.getKey('ChannelUp').code:
+                case tizen.tvinputdevice.getKey('MediaTrackNext').code:
                     event.preventDefault();
                     Lampa.PlayerPlaylist.next();
                     break;
                 case tizen.tvinputdevice.getKey('ChannelDown').code:
+                case tizen.tvinputdevice.getKey('MediaTrackPrevious').code:
                     event.preventDefault();
                     Lampa.PlayerPlaylist.prev();
+                    break;
+                case tizen.tvinputdevice.getKey('ChannelList').code:
+                    event.preventDefault();
+                    Lampa.PlayerPlaylist.show();
                     break;
             }
         });
