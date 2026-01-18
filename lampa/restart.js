@@ -30,10 +30,39 @@
                 window.location.reload();
             }
         });
+
+        Lampa.SettingsApi.addParam({
+            component: 'restart_button',
+            param: {
+                name: 'auto_restart_on_start',
+                type: 'select',
+                values: {
+                    'true': 'Да',
+                    'false': 'Нет'
+                },
+                default: Lampa.Storage.get('auto_restart_on_start', 'false')
+            },
+            field: {
+                name: 'Автоматическая перезагрузка',
+                description: 'Если включено, приложение будет автоматически перезагружаться один раз при запуске.'
+            },
+            onChange: function (value) {
+                Lampa.Storage.set('auto_restart_on_start', value);
+            }
+        });
+
     }
 
     function startPlugin() {
         window.restart_button_plugin = true;
+        if (Lampa.Storage.get('auto_restart_on_start', 'false') === 'true'
+            && !sessionStorage.getItem('restart_plugin_reloaded')) {
+            setTimeout(function () {
+                sessionStorage.setItem('restart_plugin_reloaded', 'true');
+                window.location.reload();
+            }, 1000)
+            return;
+        }
         initSettings();
     }
 
