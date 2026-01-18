@@ -16,6 +16,11 @@
 
         Lampa.Controller.back = function () {
             if (Lampa.Player.opened()) {
+                if (Lampa.PlayerIPTV.playning()) {
+                    // Let IPTV player handle back press
+                    original_controller_back();
+                    return;
+                }
                 if (Lampa.Select.opened()) {
                     // Menu is open, let it handle the back press
                     original_controller_back();

@@ -22,12 +22,20 @@
                 case tizen.tvinputdevice.getKey('ChannelUp').code:
                 case tizen.tvinputdevice.getKey('MediaTrackNext').code:
                     event.preventDefault();
-                    Lampa.PlayerPlaylist.next();
+                    if (Lampa.PlayerIPTV.playning()) {
+                        Lampa.PlayerIPTV.nextChannel();
+                    } else {
+                        Lampa.PlayerPlaylist.next();
+                    }
                     break;
                 case tizen.tvinputdevice.getKey('ChannelDown').code:
                 case tizen.tvinputdevice.getKey('MediaTrackPrevious').code:
                     event.preventDefault();
-                    Lampa.PlayerPlaylist.prev();
+                    if (Lampa.PlayerIPTV.playning()) {
+                        Lampa.PlayerIPTV.prevChannel();
+                    } else {
+                        Lampa.PlayerPlaylist.prev();
+                    }
                     break;
                 case tizen.tvinputdevice.getKey('ChannelList').code:
                     event.preventDefault();
