@@ -3,14 +3,27 @@
 
     function startListener() {
 
-        tizen.tvinputdevice.registerKey('MediaPlayPause'); 
+        tizen.tvinputdevice.registerKey('MediaPlayPause');
+        tizen.tvinputdevice.registerKey('ChannelUp');
+        tizen.tvinputdevice.registerKey('ChannelDown');
 
         document.addEventListener("keydown", (event) => {
-            if (event.keyCode === tizen.tvinputdevice.getKey('MediaPlayPause').code) {
-                if (Lampa.Player.opened()) {
+            if (!Lampa.Player.opened()) {
+                return;
+            }
+            switch (event.keyCode) {
+                case tizen.tvinputdevice.getKey('MediaPlayPause').code:
                     event.preventDefault();
                     Lampa.PlayerVideo.playpause();
-                }
+                    break;
+                case tizen.tvinputdevice.getKey('ChannelUp').code:
+                    event.preventDefault();
+                    Lampa.PlayerPlaylist.next();
+                    break;
+                case tizen.tvinputdevice.getKey('ChannelDown').code:
+                    event.preventDefault();
+                    Lampa.PlayerPlaylist.prev();
+                    break;
             }
         });
     }
